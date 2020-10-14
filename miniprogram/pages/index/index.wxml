@@ -1,2 +1,4 @@
-<button type="primary" bindtap="authorizeHandle">请授权地理位置</button>
-<button open-type="getUserInfo">授权</button>
+<!--index.wxml-->
+<view class="container">
+  <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}"></ec-canvas>
+</view>
