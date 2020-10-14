@@ -9,7 +9,9 @@ let wechartConfig = {
 }
 App({
   onLaunch: function () {
-
+    // wx.getLocation({
+    //   altitude: 'altitude',
+    // })
   },
   // 全局事件
   event  
