@@ -1,0 +1,2 @@
+<button type="primary" bindtap="authorizeHandle">请授权地理位置</button>
+<button open-type="getUserInfo">授权</button>
