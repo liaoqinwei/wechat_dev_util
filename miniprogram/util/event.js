@@ -1,23 +1,23 @@
 class Event {
-  eventLoop = {}
+  eventPool = {}
 
   emit(type, ctx, ...args) {
-    this.eventLoop[type].forEach(item => item.apply(ctx, args))
+    this.eventPool[type].forEach(item => item.apply(ctx, args))
   }
   off(type, fn) {
     if (fn) {
-      let index = this.eventLoop[type].indexOf(fn)
+      let index = this.eventPool[type].indexOf(fn)
       while (index > -1) {
-        delete this.eventLoop[type][index]
-        index = this.eventLoop[type].indexOf(fn, index)
+        delete this.eventPool[type][index]
+        index = this.eventPool[type].indexOf(fn, index)
       }
       return 
     }
-    delete this.eventLoop[type]
+    delete this.eventPool[type]
   }
 
   on(type, fn) {
-    (this.eventLoop[type] = this.eventLoop[type] || []).push(fn)
+    (this.eventPool[type] = this.eventPool[type] || []).push(fn)
   }
 }
 

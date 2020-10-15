@@ -1,5 +1,5 @@
 import Http from './network/Http'
-import Event from './util/event'
+import Event from './util/Event'
 
 const event = new Event
 
