@@ -24,17 +24,25 @@ Page({
       strokeStyle: 'red', // 默认颜色
       fillStyle: 'red'
     })
-    brush.drowLineArc([
-      [20, 30],
-      [40, 60],
-      [60, 60]
-    ], '#0000ff')
-    brush.drowArc(20, 20, 10, 0, Math.PI * 2, true, 'red')
+    brush.drowLineArcText([
+      [20, 30, '张三'],
+      [80, 60, '李四'],
+      [140, 60, '王五'],
+      [200, 100, '赵六']
+    ], {
+      lineColor: '#f7e9a9',
+      arcColor: '#ff9d03',
+      textColor: 'black',
+      arcType: 'fill'
+    })
+    // brush.drowArc(20, 20, 10, 0, Math.PI * 2, true, 'red')
     brush.drowLine([
       [20, 20],
       [30, 30]
     ], 'black')
-    brush.drowText('哈哈哈哈哈', 0, 0)
+    // brush.drowText('哈哈哈哈哈', 20, 30, {
+    //   textAlign: 'center'
+    // })
   },
 
   /**

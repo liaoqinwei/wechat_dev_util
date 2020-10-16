@@ -2,15 +2,20 @@ class SuperBrush {
   initDown = false
   pendingPool = []
   defaultConfig = {
-    strokeStyle: 'black',
-    fillStyle: 'black',
-    textStyle: 'black',
-    font: '10px sans-serif',
-    textAlign: 'start',
-    textBaseline: 'alphabetic',
-    direction: 'inherit'
+    strokeStyle: 'black', // 线段颜色
+    fillStyle: 'black', // 上色颜色
+    textColor: 'black', // 文字颜色
+    font: '10px sans-serif', // 文字配置
+    textAlign: 'start', // 文字居中模式
+    textBaseline: 'alphabetic', // 文字
+    direction: 'inherit', // 文字的下划线配置
   }
 
+  /**
+   * 构造函数
+   * @param {String}} selector 必传选择器 
+   * @param {Object} config 可选配置
+   */
   constructor(selector, config) {
     this._selector = selector
     this.defaultConfig = {
@@ -43,7 +48,6 @@ class SuperBrush {
       this.pendingPool.forEach(item => {
         (this[item.fn]).apply(this, item.params)
       })
-
     })
   }
 
@@ -71,12 +75,18 @@ class SuperBrush {
    * @param {*} endAngle 
    * @param {*} anticlockwise 
    */
-  drowArc(x, y, radius, startAngle, endAngle, anticlockwise = true, color) {
+  drowArc(x, y, radius, startAngle, endAngle, anticlockwise = true, color, type) {
     if (!this.checkInitDown('drowArc', ...arguments)) return
-    this._ctx.strokeStyle = color || this.defaultConfig.strokeStyle
+    this._setColor(color)
+    console.log(arguments);
+
 
     this._ctx.beginPath()
     this._ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
+    if (type === 'fill') {
+      this._ctx.fill()
+      return
+    }
     this._ctx.stroke()
   }
 
@@ -85,45 +95,97 @@ class SuperBrush {
    * @param {*} text 
    * @param {*} x 
    * @param {*} y 
-   * @param {*} config 
+   * @param {*} config 配置可选
    */
   drowText(text, x, y, config = {}) {
-    if (!this.checkInitDown('drowArc', ...arguments)) return
-    this._ctx.strokeStyle = color || this.defaultConfig.strokeStyle
+    if (!this.checkInitDown('drowText', ...arguments)) return
 
-
+    // 可优化
     let {
-      type = 'fullText', // fullText || strokeText
-        textStyle, font, textAlign,
+      type = 'fill', // fillText || strokeText
+        textColor, font, textAlign,
         textBaseline, direction
     } = {
       ...this.defaultConfig,
       ...config
     }
 
+    this._ctx.beginPath()
+
     // 配置画笔
-    this._ctx.fillStyle = textStyle
-    this._ctx.strokeStyle = textStyle
+    this._setColor(textColor)
     this._ctx.font = font
     this._ctx.textAlign = textAlign
     this._ctx.textBaseline = textBaseline
     this._ctx.direction = direction
 
-    this._ctx[type](text, x, y)
+    if (type === 'stroke') {
+      this._ctx.strokeText(text, x, y)
+      return
+    }
+    this._ctx.fillText(text, x, y)
   }
 
   /**
    * 绘制 圆点线端
    * @param {*} path 
    */
-  drowLineArc(path, color) {
+  drowLineArc(path, {
+    color,
+    circleSize = 3,
+    arcType = 'stroke',
+    lineColor,
+    arcColor
+  }) {
     if (!this.checkInitDown('drowLineArc', ...arguments)) return
 
-    path.reduce((preItem, item) => {
-      this.drowLine([preItem, item], color)
-      this.drowArc(...item, 5, 0, Math.PI * 2, true, color)
+    // 绘制线
+    path.reduce((preItem, item, index) => {
+      if (index === 0) return item
+      this.drowLine([preItem, item], lineColor || color)
       return item;
     }, path[0])
+    // 绘制 圆形
+    path.forEach(item => {
+      this.drowArc(...item, circleSize, 0, Math.PI * 2, true, arcColor || color, arcType)
+    })
+  }
+
+  /**
+   * 
+   * @param {*} path [[x,y,text]]
+   * @param {*} param1 
+   */
+  drowLineArcText(path, {
+    color,
+    circleSize = 3,
+    arcType = 'stroke',
+    textType = 'fill',
+    lineColor,
+    arcColor,
+    textColor,
+  }) {
+    if (!this.checkInitDown('drowLineArcText', ...arguments)) return
+    let tempPath = path.map(item => [item[0], item[1]])
+    console.log(tempPath);
+
+    this.drowLineArc(tempPath, arguments[1])
+    path.forEach(item => {
+      this.drowText(String(item[2]) || '', item[0], item[1] - circleSize - 10, {
+        type: textType,
+        textAlign: 'center',
+        textColor
+      })
+    })
+  }
+
+  /**
+   * 设置颜色
+   * @param {String}} color 
+   */
+  _setColor(color) {
+    this._ctx.strokeStyle = color
+    this._ctx.fillStyle = color
   }
 
   /**
