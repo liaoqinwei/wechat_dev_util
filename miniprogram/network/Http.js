@@ -31,7 +31,15 @@ class Http {
     // 处理baseURL
     this.defaultConfig.baseUrl = baseUrl.lastIndexOf('/') === baseUrl.length - 1 ? baseUrl : baseUrl + '/';
   }
-
+  // 初始化参数
+  _init(){
+    ['get','head','option','trace','connect','post','put','delete'].forEach(item=>{
+      this[item] = function(config={}){
+        config.method = item
+        this.request(config)
+      }
+    })
+  }
   /**
    * 合并参数
    */
@@ -110,5 +118,6 @@ class Http {
     return this.url.indexOf('?') > -1 ? '&' + paramStr : '?' + paramStr
   }
 }
+
 
 export default Http

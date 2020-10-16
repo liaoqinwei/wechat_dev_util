@@ -1,0 +1,2 @@
+<!--components/login.wxml-->
+<button open-type="getUserInfo" bindgetuserinfo="userInfoHandle" >登陆</button>

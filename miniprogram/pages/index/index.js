@@ -35,14 +35,26 @@ Page({
       textColor: 'black',
       arcType: 'fill'
     })
-    // brush.drowArc(20, 20, 10, 0, Math.PI * 2, true, 'red')
+    brush.drowLineArcText([
+      [20, 80, '10'],
+      [80, 90, '20'],
+      [140, 80, '30'],
+      [200, 120, '10']
+    ], {
+      lineColor: '#beddec',
+      arcColor: '#3a92f7',
+      textColor: 'black',
+      arcType: 'fill',
+      textTop:-20
+    })
+    /*brush.drowArc(20, 20, 10, 0, Math.PI * 2, true, 'red')
     brush.drowLine([
       [20, 20],
       [30, 30]
     ], 'black')
-    // brush.drowText('哈哈哈哈哈', 20, 30, {
-    //   textAlign: 'center'
-    // })
+    brush.drowText('哈哈哈哈哈', 20, 30, {
+      textAlign: 'center'
+    })*/
   },
 
   /**

@@ -78,8 +78,6 @@ class SuperBrush {
   drowArc(x, y, radius, startAngle, endAngle, anticlockwise = true, color, type) {
     if (!this.checkInitDown('drowArc', ...arguments)) return
     this._setColor(color)
-    console.log(arguments);
-
 
     this._ctx.beginPath()
     this._ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
@@ -164,14 +162,14 @@ class SuperBrush {
     lineColor,
     arcColor,
     textColor,
+    textTop = circleSize + 10
   }) {
     if (!this.checkInitDown('drowLineArcText', ...arguments)) return
     let tempPath = path.map(item => [item[0], item[1]])
-    console.log(tempPath);
 
     this.drowLineArc(tempPath, arguments[1])
     path.forEach(item => {
-      this.drowText(String(item[2]) || '', item[0], item[1] - circleSize - 10, {
+      this.drowText(String(item[2]) || '', item[0], item[1] - textTop, {
         type: textType,
         textAlign: 'center',
         textColor
