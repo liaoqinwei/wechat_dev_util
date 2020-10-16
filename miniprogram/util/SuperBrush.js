@@ -1,9 +1,22 @@
 class SuperBrush {
   initDown = false
-  queuePool = []
+  pendingPool = []
+  defaultConfig = {
+    strokeStyle: 'black',
+    fillStyle: 'black',
+    textStyle: 'black',
+    font: '10px sans-serif',
+    textAlign: 'start',
+    textBaseline: 'alphabetic',
+    direction: 'inherit'
+  }
 
-  constructor(selector) {
+  constructor(selector, config) {
     this._selector = selector
+    this.defaultConfig = {
+      ...this.defaultConfig,
+      ...config
+    }
     this._init()
   }
 
@@ -19,15 +32,18 @@ class SuperBrush {
 
       this._ctx = ctx
       this._node = canvas
-
-      // 执行
-
       this.initDown = true
       // 手机像素配置
       const dpr = wx.getSystemInfoSync().pixelRatio
       canvas.width = res[0].width * dpr
       canvas.height = res[0].height * dpr
       ctx.scale(dpr, dpr)
+
+      // 执行 等待池里面的所有 画笔
+      this.pendingPool.forEach(item => {
+        (this[item.fn]).apply(this, item.params)
+      })
+
     })
   }
 
@@ -35,13 +51,15 @@ class SuperBrush {
    * 绘制线段
    * @param {*} path 
    */
-  drowLine(path) {
-    if (!this.checkInitDown('drowLine', path)) return
+  drowLine(path, color) {
+    if (!this.checkInitDown('drowLine', ...arguments)) return
+    this._ctx.strokeStyle = color || this.defaultConfig.strokeStyle
+
     this._ctx.beginPath()
     path.forEach(item => {
       this._ctx.lineTo.apply(this._ctx, item)
-      this._ctx.stroke()
     })
+    this._ctx.stroke()
   }
 
   /**
@@ -53,22 +71,57 @@ class SuperBrush {
    * @param {*} endAngle 
    * @param {*} anticlockwise 
    */
-  drowArc(x, y, radius, startAngle, endAngle, anticlockwise = true) {
-    if (!this.checkInitDown('drowArc', path)) return
+  drowArc(x, y, radius, startAngle, endAngle, anticlockwise = true, color) {
+    if (!this.checkInitDown('drowArc', ...arguments)) return
+    this._ctx.strokeStyle = color || this.defaultConfig.strokeStyle
+
     this._ctx.beginPath()
     this._ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
     this._ctx.stroke()
   }
 
   /**
+   * 编写文本
+   * @param {*} text 
+   * @param {*} x 
+   * @param {*} y 
+   * @param {*} config 
+   */
+  drowText(text, x, y, config = {}) {
+    if (!this.checkInitDown('drowArc', ...arguments)) return
+    this._ctx.strokeStyle = color || this.defaultConfig.strokeStyle
+
+
+    let {
+      type = 'fullText', // fullText || strokeText
+        textStyle, font, textAlign,
+        textBaseline, direction
+    } = {
+      ...this.defaultConfig,
+      ...config
+    }
+
+    // 配置画笔
+    this._ctx.fillStyle = textStyle
+    this._ctx.strokeStyle = textStyle
+    this._ctx.font = font
+    this._ctx.textAlign = textAlign
+    this._ctx.textBaseline = textBaseline
+    this._ctx.direction = direction
+
+    this._ctx[type](text, x, y)
+  }
+
+  /**
    * 绘制 圆点线端
    * @param {*} path 
    */
-  drowLineArc(path) {
-    if (!this.checkInitDown('drowLineArc', path)) return
+  drowLineArc(path, color) {
+    if (!this.checkInitDown('drowLineArc', ...arguments)) return
+
     path.reduce((preItem, item) => {
-      this.drowLine([preItem, item])
-      this.drowArc(...item, 5, 0, Math.PI * 2)
+      this.drowLine([preItem, item], color)
+      this.drowArc(...item, 5, 0, Math.PI * 2, true, color)
       return item;
     }, path[0])
   }
@@ -76,11 +129,12 @@ class SuperBrush {
   /**
    * 检测是否初始化完 所有值都绑定成功
    */
-  checkInitDown(fn, params) {
+  checkInitDown(fn, ...params) {
     if (this.initDown) return true
     else { // 没有初始化完 存放在队列中 不执行
-      this.queuePool.push({
-        [fn]: params
+      this.pendingPool.push({
+        fn,
+        params
       })
       return false
     }
