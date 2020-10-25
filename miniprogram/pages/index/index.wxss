@@ -1,0 +1,14 @@
+.canva-container {
+  width: 1500rpx;
+  height: 200rpx;
+}
+
+#my-canvas2 {
+  width: 1500rpx;
+  height: 200rpx;
+}
+
+.scroll-canv {
+  height: 500rpx;
+  background: yellow;
+}

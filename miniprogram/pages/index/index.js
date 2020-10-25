@@ -6,7 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    canvaOffset:550,
   },
 
   /**
@@ -45,7 +45,7 @@ Page({
       arcColor: '#3a92f7',
       textColor: 'black',
       arcType: 'fill',
-      textTop:-20
+      textTop: -20
     })
     /*brush.drowArc(20, 20, 10, 0, Math.PI * 2, true, 'red')
     brush.drowLine([
@@ -55,6 +55,18 @@ Page({
     brush.drowText('哈哈哈哈哈', 20, 30, {
       textAlign: 'center'
     })*/
+
+
+
+    let brush2 = new SuperBrush('#my-canvas2')
+    let path = []
+    for (let i = 0; i < 600; i += 100) {
+      path.push([i, 50+i/50, i + ''])
+    }
+    brush2.drowLineArcText(path, {color:'#ff0000',arcType:'fill'})
+
+
+    
   },
 
   /**
@@ -97,5 +109,5 @@ Page({
    */
   onShareAppMessage: function () {
 
-  }
+  },
 })

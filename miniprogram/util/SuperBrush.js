@@ -199,6 +199,8 @@ class SuperBrush {
       return false
     }
   }
+
+
 }
 
 export default SuperBrush

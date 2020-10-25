@@ -1,0 +1,8 @@
+<!--components/super-scroll/index.wxml-->
+<scroll-view class="super-scroll" enhanced scroll-x bindscroll="scrollHandle">
+  <slot name="head"></slot>
+  <view class="scroll-container" style="{{'transform:('+offsetLeft+')'}}">
+    <slot></slot>
+  </view>
+  <slot name="footer"></slot>
+</scroll-view>

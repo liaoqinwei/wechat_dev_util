@@ -1,2 +1,10 @@
 <canvas id="my-canvas" type="2d"></canvas>
 <login url="/api/publicer/login"></login>
+<view>hahha</view>
+
+
+<super-scroll lower-threshold="{{500}}" scrolltolower="{{fn}}">
+  <view slot="head">哈哈哈哈，我是头部。。。。。</view>
+  <canvas id="my-canvas2" type="2d"></canvas>
+  <view slot="footer">哈哈哈哈，我是底部</view>
+</super-scroll>

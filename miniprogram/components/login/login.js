@@ -11,6 +11,10 @@ Component({
     url: {
       type: String,
       value: ''
+    },
+    btnStyle:{
+      type:String,
+      value:''
     }
   },
 
@@ -32,7 +36,7 @@ Component({
        * 2、存储用户 的头像 、名字、uid到本地 
        */
       if(isSucess){
-        login('/api/publicer/login').then((res)=>{
+        login(this.data.url).then((res)=>{
             console.log(res);
         })
       }else{
